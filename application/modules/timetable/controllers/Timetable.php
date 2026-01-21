@@ -1,0 +1,109 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Timetable extends MY_Controller {
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function index()
+    {    
+        $data['timetable'] = $this->Model->readQuery("
+            SELECT ti.*, 
+                   te.nom AS nom_teacher, 
+                   te.prenom AS prenom_teacher 
+            FROM timetable ti
+            LEFT JOIN teachers te ON te.id_teacher = ti.id_teacher
+        ");
+
+        $data['teachers'] = $this->Model->read('teachers');
+
+        $this->load->view('timetableView',$data);
+    }
+
+    function Creer_timetable()
+    {
+        $date_debut   = $this->input->post('date_debut');
+        $date_defin   = $this->input->post('date_defin');
+        $id_teacher   = $this->input->post('id_teacher');
+
+        // Sécurité simple
+        if(empty($date_debut) || empty($date_defin) || empty($id_teacher)){
+            $sms['sms'] = '<div class="alert alert-danger">Veuillez remplir tous les champs.</div>';
+            $this->session->set_flashdata($sms);
+            redirect(base_url('timetable'));
+        }
+
+        $data = array(
+            'date_debut'     => $date_debut,
+            'date_defin'     => $date_defin,
+            'id_teacher'     => $id_teacher,
+            'date_insertion' => date('Y-m-d H:i:s')  // obligatoire car NOT NULL
+        );
+
+        $rsp = $this->Model->create('timetable', $data);
+
+        if ($rsp) {
+            $sms['sms'] = '<div class="alert alert-background fade show mt-1 message">Content created successfully.</div>';
+        } else {
+            $sms['sms'] = '<div class="alert alert-danger">Erreur inconnue.</div>';
+        }
+
+        $this->session->set_flashdata($sms);
+        redirect(base_url('timetable'));
+    }
+
+    // =====================================================
+    // UPDATE
+    // =====================================================
+    function Update_timetable()
+    {
+        $id_timetable = $this->input->post('id_timetable');
+        $date_debut   = $this->input->post('date_debut');
+        $date_defin   = $this->input->post('date_defin');
+        $id_teacher   = $this->input->post('id_teacher');
+
+        if(empty($id_timetable) || empty($date_debut) || empty($date_defin) || empty($id_teacher)){
+            $sms['sms'] = '<div class="alert alert-danger">Veuillez remplir tous les champs.</div>';
+            $this->session->set_flashdata($sms);
+            redirect(base_url('timetable'));
+        }
+
+        $data = array(
+            'date_debut' => $date_debut,
+            'date_defin' => $date_defin,
+            'id_teacher' => $id_teacher
+            // NE PAS mettre "time" → MySQL le gère automatiquement
+        );
+
+        $rsp = $this->Model->update('timetable', ['id_timetable' => $id_timetable], $data);
+
+        if ($rsp) {
+            $sms['sms'] = '<div class="alert alert-background fade show mt-1 message">Content updated successfully.</div>';
+        } else {
+            $sms['sms'] = '<div class="alert alert-danger">Erreur inconnue.</div>';
+        }
+
+        $this->session->set_flashdata($sms);
+        redirect(base_url('timetable'));
+    }
+
+    
+    function Supprimer_timetable()
+    {
+        $id_timetable = $this->input->post('id_timetable');
+
+        $rsp = $this->Model->delete('timetable', ['id_timetable' => $id_timetable]);
+
+        if ($rsp) {
+            $sms['sms'] = '<div class="alert alert-background fade show mt-1 message">Content deleted successfully.</div>';
+        } else {
+            $sms['sms'] = '<div class="alert alert-danger">Erreur inconnue.</div>';
+        }
+
+        $this->session->set_flashdata($sms);
+        redirect(base_url('timetable'));
+    }
+}
