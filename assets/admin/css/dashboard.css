@@ -1,0 +1,432 @@
+/* ============================================================
+   NTURO — Personal Portfolio Admin Dashboard
+   Styles spécifiques au Dashboard (palette sobre : indigo/rose)
+   ============================================================ */
+
+:root {
+    --nturo-primary: #4f46e5;
+    --nturo-primary-soft: #eef2ff;
+    --nturo-music: #db2777;
+    --nturo-music-soft: #fdf2f8;
+    --nturo-amber: #d97706;
+    --nturo-amber-soft: #fffbeb;
+    --nturo-teal: #0d9488;
+    --nturo-teal-soft: #f0fdfa;
+    --nturo-slate: #64748b;
+}
+
+/* ---------- Zone de bienvenue ---------- */
+.welcome-hero {
+    background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 60%, #9333ea 100%);
+    border-radius: 1rem;
+    color: #fff;
+    padding: 2rem 2.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-hero::after {
+    content: "";
+    position: absolute;
+    right: -80px;
+    top: -80px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.welcome-hero::before {
+    content: "";
+    position: absolute;
+    right: 60px;
+    bottom: -110px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.welcome-hero .hero-date {
+    opacity: .85;
+    font-size: .85rem;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+}
+
+.welcome-hero h2 {
+    font-weight: 700;
+    margin: .35rem 0 .4rem;
+}
+
+.welcome-hero p {
+    opacity: .9;
+    margin-bottom: 1.25rem;
+}
+
+.welcome-hero .btn-light {
+    color: var(--nturo-primary);
+    font-weight: 600;
+}
+
+.welcome-hero .btn-outline-light {
+    border-width: 2px;
+}
+
+/* ---------- Cartes statistiques ---------- */
+.stat-card {
+    border: none;
+    border-radius: .9rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .06);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, .10);
+}
+
+.stat-card .stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+.stat-card .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #1e293b;
+}
+
+.stat-card .stat-label {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--nturo-slate);
+    font-weight: 600;
+}
+
+.stat-card .stat-sub {
+    font-size: .78rem;
+    color: #94a3b8;
+}
+
+.stat-icon.bg-primary-soft { background: var(--nturo-primary-soft); color: var(--nturo-primary); }
+.stat-icon.bg-music-soft   { background: var(--nturo-music-soft);   color: var(--nturo-music); }
+.stat-icon.bg-teal-soft    { background: var(--nturo-teal-soft);    color: var(--nturo-teal); }
+.stat-icon.bg-amber-soft   { background: var(--nturo-amber-soft);   color: var(--nturo-amber); }
+
+/* ---------- Titres de sections ---------- */
+.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0;
+}
+
+.card {
+    border: none;
+    border-radius: .9rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .06);
+}
+
+.card .card-header {
+    background: transparent;
+    border-bottom: 1px solid #eef2f7;
+    padding: 1rem 1.25rem;
+}
+
+/* ---------- Badges types de projets ---------- */
+.badge-type-it     { background: var(--nturo-primary-soft); color: var(--nturo-primary); }
+.badge-type-music  { background: var(--nturo-music-soft);   color: var(--nturo-music); }
+.badge-type-other  { background: #f1f5f9;                   color: var(--nturo-slate); }
+
+.badge-type {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: .35em .7em;
+    border-radius: 30px;
+}
+
+/* ---------- Liste des projets récents ---------- */
+.project-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: .7rem;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.project-thumb-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: .7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.ph-it    { background: var(--nturo-primary-soft); color: var(--nturo-primary); }
+.ph-music { background: var(--nturo-music-soft);   color: var(--nturo-music); }
+.ph-other { background: #f1f5f9;                   color: var(--nturo-slate); }
+
+.tech-chip {
+    display: inline-block;
+    font-size: .7rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    border-radius: 20px;
+    padding: .1rem .55rem;
+    margin: .1rem .15rem 0 0;
+}
+
+/* ---------- Messages récents ---------- */
+.message-item {
+    display: flex;
+    gap: .85rem;
+    align-items: flex-start;
+    padding: .8rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.message-item:last-child {
+    border-bottom: none;
+}
+
+.message-item.unread {
+    background: var(--nturo-primary-soft);
+    border-left: 3px solid var(--nturo-primary);
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #475569;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: .95rem;
+}
+
+.message-item.unread .message-avatar {
+    background: var(--nturo-primary);
+    color: #fff;
+}
+
+.message-item .msg-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: .9rem;
+}
+
+.message-item.unread .msg-name {
+    font-weight: 700;
+}
+
+.message-item .msg-subject {
+    font-size: .84rem;
+    color: #475569;
+}
+
+.message-item .msg-date {
+    font-size: .74rem;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+.badge-status-unread {
+    background: var(--nturo-primary);
+    color: #fff;
+    font-size: .64rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    border-radius: 20px;
+    padding: .3em .65em;
+}
+
+.badge-status-read,
+.badge-status-replied,
+.badge-status-archived {
+    background: #f1f5f9;
+    color: var(--nturo-slate);
+    font-size: .64rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    border-radius: 20px;
+    padding: .3em .65em;
+}
+
+/* ---------- Carte profil ---------- */
+.profile-card {
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--nturo-primary-soft);
+}
+
+.profile-avatar-placeholder {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.profile-meta {
+    font-size: .85rem;
+    color: var(--nturo-slate);
+}
+
+.profile-meta i {
+    margin-right: .35rem;
+    color: var(--nturo-primary);
+}
+
+/* ---------- Quick actions ---------- */
+.quick-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    padding: 1rem .5rem;
+    border: 1px dashed #dbe2ea;
+    border-radius: .8rem;
+    text-decoration: none;
+    color: #334155;
+    font-size: .8rem;
+    font-weight: 600;
+    transition: all .15s ease;
+    height: 100%;
+}
+
+.quick-action-btn i {
+    font-size: 1.5rem;
+    color: var(--nturo-primary);
+}
+
+.quick-action-btn:hover:not(.disabled) {
+    border-color: var(--nturo-primary);
+    background: var(--nturo-primary-soft);
+    color: var(--nturo-primary);
+}
+
+.quick-action-btn.disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+/* ---------- Music activity ---------- */
+.music-card {
+    background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 100%);
+    border: 1px solid #fbcfe8;
+}
+
+.music-stat {
+    text-align: center;
+    padding: .75rem .5rem;
+    background: #fff;
+    border-radius: .8rem;
+    border: 1px solid #fce7f3;
+}
+
+.music-stat .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--nturo-music);
+    line-height: 1.2;
+}
+
+.music-stat .label {
+    font-size: .74rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--nturo-slate);
+}
+
+.music-icon-bubble {
+    width: 52px;
+    height: 52px;
+    border-radius: .8rem;
+    background: var(--nturo-music-soft);
+    color: var(--nturo-music);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+/* ---------- États vides ---------- */
+.empty-state {
+    text-align: center;
+    padding: 2.25rem 1rem;
+    color: #94a3b8;
+}
+
+.empty-state i {
+    font-size: 2.4rem;
+    display: block;
+    margin-bottom: .6rem;
+    opacity: .6;
+}
+
+.empty-state span {
+    font-size: .88rem;
+}
+
+/* ---------- Sidebar : items "bientôt disponible" ---------- */
+.soon-badge {
+    font-size: .58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    background: #f1f5f9;
+    color: #94a3b8;
+    border-radius: 20px;
+    padding: .2em .55em;
+    margin-left: auto;
+}
+
+.sidebar-wrapper .metismenu a.menu-soon {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 575.98px) {
+    .welcome-hero {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .welcome-hero h2 {
+        font-size: 1.25rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.4rem;
+    }
+}

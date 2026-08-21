@@ -21,12 +21,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Plugins CSS -->
-    <link href="<?=base_url()?>assets/admin/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
     <link href="<?=base_url()?>assets/admin/plugins/simplebar/css/simplebar.css" rel="stylesheet">
     <link href="<?=base_url()?>assets/admin/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
     <link href="<?=base_url()?>assets/admin/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet">
     <link href="<?=base_url()?>assets/admin/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     
     <!-- Loader -->
     <link href="<?=base_url()?>assets/admin/css/pace.min.css" rel="stylesheet"/>    
@@ -36,6 +34,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <link href="<?=base_url()?>assets/admin/css/bootstrap-extended.css" rel="stylesheet">
     <link href="<?=base_url()?>assets/admin/sass/app.css" rel="stylesheet">
     <link href="<?=base_url()?>assets/admin/css/icons.css" rel="stylesheet">
+
+    <!-- Dashboard CSS -->
+    <link href="<?=base_url()?>assets/admin/css/dashboard.css" rel="stylesheet">
     
     <!-- Additional Icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -50,7 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     
     <!-- Title -->
-    <title><?= isset($page_title) ? $page_title : 'Admin Dashboard' ?></title>
+    <title><?= isset($page_title) ? $page_title . ' · NTURO Admin' : 'NTURO · Portfolio Admin' ?></title>
     
     <!-- Additional Meta Tags -->
     <meta name="description" content="<?= isset($page_description) ? $page_description : 'Admin Dashboard' ?>">

@@ -70,30 +70,23 @@
 <script src="<?= base_url() ?>assets/admin/plugins/simplebar/js/simplebar.min.js"></script>
 <script src="<?= base_url() ?>assets/admin/plugins/metismenu/js/metisMenu.min.js"></script>
 <script src="<?= base_url() ?>assets/admin/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
-<script src="<?= base_url() ?>assets/admin/plugins/apexcharts-bundle/js/apexcharts.min.js"></script>
 <script src="<?= base_url() ?>assets/admin/plugins/peity/jquery.peity.min.js"></script>
 <script src="<?= base_url() ?>assets/admin/plugins/datatable/js/jquery.dataTables.min.js"></script>
 <script src="<?= base_url() ?>assets/admin/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
-<script src="<?= base_url() ?>assets/admin/cdn.quilljs.com/1.3.6/quill.js"></script>
 
 <!-- App scripts -->
 <script src="<?= base_url() ?>assets/admin/js/app.js"></script>
-<script src="<?= base_url() ?>assets/admin/js/index.js"></script>
 
   <script>
     $(document).ready(function() {
-      $('#example').DataTable();
-      } );
-  </script>
-  <script>
-    $(document).ready(function() {
-      var table = $('#example2').DataTable( {
-        lengthChange: false,
-        buttons: [ 'copy', 'excel', 'pdf', 'print']
-      } );
-     
-      table.buttons().container()
-        .appendTo( '#example2_wrapper .col-md-6:eq(0)' );
+      if ($('#example').length) {
+        $('#example').DataTable();
+      }
+      if ($('#example2').length) {
+        $('#example2').DataTable( {
+          lengthChange: false
+        } );
+      }
     } );
   </script>
 
@@ -109,6 +102,7 @@
     </script> -->
 
  <script type="text/javascript">
+   if (typeof CKEDITOR !== 'undefined' && document.getElementById('editor')) {
    CKEDITOR.replace('editor', {
         // Main toolbar groups configuration
         toolbarGroups: [
@@ -136,6 +130,7 @@
         // Set the default language
         language: 'en'
     });
+   }
  </script>
 </body>
 </html>

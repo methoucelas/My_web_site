@@ -1,796 +1,411 @@
 <?php include VIEWPATH.'includes/Header.php'; ?>
 <?php include VIEWPATH.'includes/Sidebar.php'; ?>
 
+<?php
+// Salutation selon l'heure
+$hour = (int) date('G');
+if ($hour < 12) {
+    $greeting = 'Good morning';
+} elseif ($hour < 18) {
+    $greeting = 'Good afternoon';
+} else {
+    $greeting = 'Good evening';
+}
+
+$admin_name = $this->session->userdata('name') ? $this->session->userdata('name') : $this->session->userdata('user');
+?>
+
+<!--start page wrapper -->
 <div class="page-wrapper">
 <div class="page-content">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Tableau de Bord</h1>
-        <div class="d-flex">
-            <span class="text-muted mr-3"><?= date('d/m/Y') ?></span>
-            <a href="<?= base_url('dashboard/export') ?>" class="btn btn-sm btn-outline-primary">
-                <i class="fas fa-download"></i> Exporter
-            </a>
-        </div>
+
+<?php if (!empty($this->session->flashdata('sms'))) {
+    echo $this->session->flashdata('sms');
+} ?>
+
+<!-- ==================== Zone de bienvenue ==================== -->
+<div class="welcome-hero d-sm-flex align-items-center justify-content-between">
+    <div class="position-relative" style="z-index:1;">
+        <div class="hero-date"><?= date('l, j F Y') ?></div>
+        <h2><?= $greeting ?>, <?= html_escape($admin_name) ?> &#128075;</h2>
+        <p class="mb-0">Welcome to your portfolio dashboard.</p>
     </div>
+    <div class="mt-3 mt-sm-0 position-relative" style="z-index:1;">
+        <a href="<?= base_url() ?>" target="_blank" class="btn btn-light btn-sm px-3">
+            <i class='bx bx-globe me-1'></i>View Website
+        </a>
+    </div>
+</div>
 
-    <!-- Cartes statistiques -->
-    <div class="row">
-        <!-- Étudiants -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Étudiants Totaux</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $total_students ?></div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-success mr-2">
-                                    <i class="fas fa-arrow-up"></i> <?= round(($total_students/($total_students+1))*100) ?>%
-                                </span>
-                                <span>Depuis début</span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Formateurs -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Formateurs</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $total_teachers ?></div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span>Actifs: <?= $total_teachers ?></span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-chalkboard-teacher fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cours -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Cours Disponibles
-                            </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= $total_courses ?></div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                            style="width: <?= ($total_courses/10)*100 ?>%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-info mr-2"><?= count($courses_by_category) ?> catégories</span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-book fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Inscriptions -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Inscriptions Totales</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $total_inscriptions ?></div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-success mr-2">Payées: <?= $paid_inscriptions ?></span>
-                                <span class="text-danger">En attente: <?= $pending_inscriptions ?></span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+<!-- ==================== Statistiques principales ==================== -->
+<div class="row g-3 mt-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-primary-soft"><i class='bx bx-code-alt'></i></div>
+                <div>
+                    <div class="stat-value"><?= (int) $total_projects ?></div>
+                    <div class="stat-label">Total Projects</div>
+                    <div class="stat-sub"><?= (int) $published_projects ?> published &middot; <?= (int) $draft_projects ?> draft</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Deuxième ligne de cartes -->
-    <div class="row">
-        <!-- Validation Email -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-purple shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-purple text-uppercase mb-1">
-                                Validation Email</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $email_confirmed ?></div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-success mr-2">Validés: <?= $email_confirmed ?></span>
-                                <span class="text-warning">Non validés: <?= $email_not_confirmed ?></span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-envelope fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Taux de Conversion -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-indigo shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-indigo text-uppercase mb-1">
-                                Taux de Conversion</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                <?= $total_students > 0 ? round(($paid_inscriptions/$total_students)*100, 1) : 0 ?>%
-                            </div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span>Inscriptions → Paiements</span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-percentage fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Revenue -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-orange shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-orange text-uppercase mb-1">
-                                Revenue Estimé</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                <?= number_format($paid_inscriptions * 50, 0, ',', ' ') ?> BIF
-                            </div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span>Basé sur prix moyen 50$</span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Satisfaction -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-teal shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-teal text-uppercase mb-1">
-                                Taux Satisfaction</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">4.5/5</div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span>Basé sur témoignages</span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-star fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-music-soft"><i class='bx bx-music'></i></div>
+                <div>
+                    <div class="stat-value"><?= (int) $music_projects ?></div>
+                    <div class="stat-label">Music Projects</div>
+                    <div class="stat-sub"><?= (int) $music_tracks ?> tracks &middot; <?= (int) $music_videos ?> videos</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Graphiques et tableaux -->
-    <div class="row">
-        <!-- Graphique en anneau - Paiements -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Statut des Paiements</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Actions:</div>
-                            <a class="dropdown-item" href="<?= base_url('inscriptions') ?>">Voir toutes</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" onclick="refreshChart('payment')">
-                                <i class="fas fa-sync-alt fa-sm"></i> Actualiser
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="paymentPieChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> Payés (<?= $paid_inscriptions ?>)
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-warning"></i> En attente (<?= $pending_inscriptions ?>)
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-danger"></i> Échoués (<?= $failed_inscriptions ?? 0 ?>)
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Graphique à barres - Inscriptions par mois -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Évolution des Inscriptions (<?= date('Y') ?>)</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Période:</div>
-                            <a class="dropdown-item" href="#" onclick="changePeriod('month')">Mensuel</a>
-                            <a class="dropdown-item" href="#" onclick="changePeriod('quarter')">Trimestriel</a>
-                            <a class="dropdown-item" href="#" onclick="changePeriod('year')">Annuel</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="inscriptionsBarChart"></canvas>
-                    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-teal-soft"><i class='bx bx-brain'></i></div>
+                <div>
+                    <div class="stat-value"><?= (int) $total_skills ?></div>
+                    <div class="stat-label">Skills</div>
+                    <div class="stat-sub"><?= (int) $total_technologies ?> technologies</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tableaux -->
-    <div class="row">
-        <!-- Dernières inscriptions -->
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Dernières Inscriptions</h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Étudiant</th>
-                                    <th>Cours</th>
-                                    <th>Statut</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($recent_inscriptions)): ?>
-                                    <?php foreach($recent_inscriptions as $inscription): ?>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="mr-2">
-                                                    <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center">
-                                                        <span class="text-white"><?= strtoupper(substr($inscription->fullname, 0, 1)) ?></span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="font-weight-bold"><?= htmlspecialchars($inscription->fullname) ?></div>
-                                                    <div class="text-muted small"><?= htmlspecialchars($inscription->email) ?></div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><?= htmlspecialchars($inscription->nom_course) ?></td>
-                                        <td>
-                                            <?php 
-                                            $status_class = '';
-                                            switch($inscription->status_payement) {
-                                                case 'paid': $status_class = 'text-success'; break;
-                                                case 'pending': $status_class = 'text-warning'; break;
-                                                default: $status_class = 'text-danger';
-                                            }
-                                            ?>
-                                            <span class="badge <?= $status_class ?>">
-                                                <?= ucfirst($inscription->status_payement) ?>
-                                            </span>
-                                        </td>
-
-                                        <td class="text-muted small">
-                                            <?= date('d/m/Y', strtotime($inscription->date_insertion)) ?>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="4" class="text-center">Aucune inscription récente</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <a href="<?= base_url('inscriptions') ?>" class="btn btn-sm btn-outline-primary btn-block">
-                        Voir toutes les inscriptions
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top Cours -->
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Cours les plus Populaires</h6>
-                </div>
-                <div class="card-body">
-                    <?php if (!empty($top_courses)): ?>
-                        <?php foreach($top_courses as $index => $course): ?>
-                        <div class="row align-items-center mb-3">
-                            <div class="col-2 text-right">
-                                <span class="badge badge-primary badge-pill"><?= $index + 1 ?></span>
-                            </div>
-                            <div class="col-7">
-                                <div class="progress-wrapper">
-                                    <div class="progress-info">
-                                        <div class="progress-label">
-                                            <span class="font-weight-bold"><?= htmlspecialchars($course->nom_course) ?></span>
-                                        </div>
-                                        <div class="progress-percentage">
-                                            <span><?= $course->inscription_count ?> inscrits</span>
-                                        </div>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-<?= ['primary','success','info','warning','danger'][$index % 5] ?>" 
-                                             role="progressbar" 
-                                             style="width: <?= ($course->inscription_count/max(array_column($top_courses, 'inscription_count')))*100 ?>%">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3 text-right">
-                                <span class="badge badge-light">
-                                    <?= round(($course->inscription_count/$total_inscriptions)*100, 1) ?>%
-                                </span>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="text-center text-muted">Aucun cours avec inscriptions</div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Informations supplémentaires -->
-    <div class="row">
-        <!-- Répartition par pays -->
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Étudiants par Pays</h6>
-                </div>
-                <div class="card-body">
-                    <?php 
-                    $countries = $this->Model->get_students_by_country();
-                    if (!empty($countries)):
-                    ?>
-                        <?php foreach($countries as $country): ?>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div>
-                                <i class="fas fa-globe-africa text-primary mr-2"></i>
-                                <span><?= htmlspecialchars($country->your_country ?: 'Non spécifié') ?></span>
-                            </div>
-                            <span class="badge badge-primary badge-pill"><?= $country->student_count ?></span>
-                        </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="text-center text-muted">Aucune donnée de pays disponible</div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        
-
-        <!-- Top Formateurs -->
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Top Formateurs</h6>
-                </div>
-                <div class="card-body">
-                    <?php if (!empty($top_teachers)): ?>
-                        <?php foreach($top_teachers as $index => $teacher): ?>
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="mr-3">
-                                <div class="avatar-sm bg-<?= ['primary','success','info','warning','danger'][$index % 5] ?> 
-                                          rounded-circle d-flex align-items-center justify-content-center">
-                                    <span class="text-white"><?= strtoupper(substr($teacher->teacher_name, 0, 1)) ?></span>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="font-weight-bold"><?= htmlspecialchars($teacher->teacher_name) ?></div>
-                                <div class="text-muted small">
-                                    <?= $teacher->student_count ?> étudiants • <?= $teacher->course_count ?> cours
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="badge badge-light">Top <?= $index + 1 ?></span>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="text-center text-muted">Aucun formateur avec étudiants</div>
-                    <?php endif; ?>
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-amber-soft"><i class='bx bx-envelope'></i></div>
+                <div>
+                    <div class="stat-value"><?= (int) $unread_messages ?></div>
+                    <div class="stat-label">Unread Messages</div>
+                    <div class="stat-sub"><?= (int) $total_messages ?> total received</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- ==================== Projects Overview + My Profile ==================== -->
+<div class="row g-3 mt-1">
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h6 class="section-title">Projects Overview</h6>
+                <span class="text-muted small"><?= (int) $total_projects ?> project<?= ($total_projects == 1) ? '' : 's' ?></span>
+            </div>
+            <div class="card-body">
+                <?php if ($total_projects > 0) { ?>
+                <div class="row align-items-center">
+                    <div class="col-sm-5">
+                        <canvas id="projectsOverviewChart" height="210"></canvas>
+                    </div>
+                    <div class="col-sm-7 mt-3 mt-sm-0">
+                        <?php
+                        $types = array(
+                            array('label' => 'IT Projects',    'count' => $it_projects,    'color' => '#4f46e5'),
+                            array('label' => 'Music Projects', 'count' => $music_projects, 'color' => '#db2777'),
+                            array('label' => 'Other Projects', 'count' => $other_projects, 'color' => '#94a3b8'),
+                        );
+                        ?>
+                        <?php foreach ($types as $t) { 
+                            $pct = ($total_projects > 0) ? round(($t['count'] / $total_projects) * 100) : 0;
+                        ?>
+                        <div class="d-flex align-items-center justify-content-between border-bottom py-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span style="width:10px;height:10px;border-radius:50%;background:<?= $t['color'] ?>;display:inline-block;"></span>
+                                <span class="small text-muted"><?= $t['label'] ?></span>
+                            </div>
+                            <div>
+                                <strong><?= (int) $t['count'] ?></strong>
+                                <small class="text-muted ms-1"><?= $pct ?>%</small>
+                            </div>
+                        </div>
+                        <?php } ?>
+                    </div>
+                </div>
+                <?php } else { ?>
+                <div class="empty-state">
+                    <i class='bx bx-folder-open'></i>
+                    <span>No projects yet</span>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="col-lg-5">
+        <div class="card h-100 profile-card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h6 class="section-title">My Profile</h6>
+            </div>
+            <div class="card-body">
+                <?php if (!empty($profile)) { ?>
+                    <div class="position-relative d-inline-block">
+                        <?php if (!empty($profile['profile_image'])) { ?>
+                            <img src="<?= base_url('attachments/profile/' . $profile['profile_image']) ?>"
+                                 class="profile-avatar" alt="profile"
+                                 onerror="this.style.display='none';document.getElementById('profileFallback').style.display='flex';">
+                            <div id="profileFallback" class="profile-avatar-placeholder" style="display:none;">
+                                <?= strtoupper(substr($profile['full_name'], 0, 1)) ?>
+                            </div>
+                        <?php } else { ?>
+                            <div class="profile-avatar-placeholder">
+                                <?= strtoupper(substr($profile['full_name'], 0, 1)) ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <h5 class="mt-3 mb-1 fw-bold"><?= html_escape($profile['full_name']) ?></h5>
+                    <p class="text-muted small mb-3"><?= html_escape($profile['professional_title']) ?></p>
 
-<!-- Scripts pour les graphiques -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <div class="profile-meta mb-1">
+                        <?php if (!empty($profile['location'])) { ?>
+                        <div class="mb-1"><i class='bx bx-map'></i><?= html_escape($profile['location']) ?></div>
+                        <?php } ?>
+                        <?php if (!empty($profile['email'])) { ?>
+                        <div class="mb-1"><i class='bx bx-envelope'></i><?= html_escape($profile['email']) ?></div>
+                        <?php } ?>
+                    </div>
 
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-3" disabled
+                            title="Module Profile à venir">
+                        <i class='bx bx-edit-alt me-1'></i>Edit Profile
+                        <span class="soon-badge ms-1">Soon</span>
+                    </button>
+                <?php } else { ?>
+                    <div class="empty-state">
+                        <i class='bx bx-user'></i>
+                        <span>No profile configured yet</span>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== Recent Projects + Recent Messages ==================== -->
+<div class="row g-3 mt-1">
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h6 class="section-title">Recent Projects</h6>
+                <a href="javascript:;" class="small text-decoration-none menu-soon-link">View all</a>
+            </div>
+            <div class="card-body p-0">
+                <?php if (!empty($recent_projects)) { ?>
+                    <?php foreach ($recent_projects as $p) {
+                        $type = ($p['project_type'] == 'MUSIC') ? 'music' : (($p['project_type'] == 'OTHER') ? 'other' : 'it');
+                        $typeIcon = ($type == 'music') ? 'bx-music' : (($type == 'other') ? 'bx-package' : 'bx-code-curly');
+                    ?>
+                    <div class="d-flex gap-3 align-items-start p-3 border-bottom">
+                        <div class="position-relative" style="width:56px;height:56px;flex-shrink:0;">
+                            <div class="project-thumb-placeholder ph-<?= $type ?> position-absolute top-0 start-0 w-100 h-100">
+                                <i class='bx <?= $typeIcon ?>'></i>
+                            </div>
+                            <?php if (!empty($p['image'])) { ?>
+                            <img src="<?= base_url('attachments/projects/' . $p['image']) ?>"
+                                 class="project-thumb position-absolute top-0 start-0 w-100 h-100"
+                                 alt="" onerror="this.remove();">
+                            <?php } ?>
+                        </div>
+                        <div class="flex-grow-1 min-width-0">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <strong class="small"><?= html_escape($p['title']) ?></strong>
+                                <span class="badge badge-type badge-type-<?= $type ?>"><?= $p['project_type'] ?></span>
+                                <?php if ($p['status'] != 'published') { ?>
+                                    <span class="badge bg-light text-dark border small-text"><?= ucfirst($p['status']) ?></span>
+                                <?php } ?>
+                            </div>
+                            <?php if (!empty($p['short_description'])) { ?>
+                            <div class="text-muted small mt-1"><?= html_escape(mb_substr($p['short_description'], 0, 90)) ?><?= (mb_strlen($p['short_description']) > 90) ? '…' : '' ?></div>
+                            <?php } ?>
+                            <?php if (!empty($p['technologies'])) { ?>
+                            <div class="mt-1">
+                                <?php foreach (explode(', ', $p['technologies']) as $tech) { ?>
+                                    <span class="tech-chip"><?= html_escape($tech) ?></span>
+                                <?php } ?>
+                            </div>
+                            <?php } ?>
+                        </div>
+                        <div class="text-muted text-end" style="font-size:.74rem;white-space:nowrap;">
+                            <?= date('d/m/Y', strtotime($p['created_at'])) ?>
+                        </div>
+                    </div>
+                    <?php } ?>
+                <?php } else { ?>
+                    <div class="empty-state">
+                        <i class='bx bx-folder-open'></i>
+                        <span>No projects yet</span>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h6 class="section-title">Recent Messages</h6>
+                <span class="badge badge-status-unread"><?= (int) $unread_messages ?> new</span>
+            </div>
+            <div class="card-body p-0">
+                <?php if (!empty($recent_messages)) { ?>
+                    <?php foreach ($recent_messages as $m) {
+                        $isUnread = ($m['status'] == 'unread');
+                        $excerpt = !empty($m['subject']) ? $m['subject'] : mb_substr($m['message'], 0, 70);
+                    ?>
+                    <div class="message-item <?= $isUnread ? 'unread' : '' ?>">
+                        <div class="message-avatar"><?= strtoupper(substr($m['name'], 0, 1)) ?></div>
+                        <div class="flex-grow-1 min-width-0">
+                            <div class="d-flex justify-content-between gap-2">
+                                <span class="msg-name text-truncate"><?= html_escape($m['name']) ?></span>
+                                <span class="msg-date"><?= date('d/m H:i', strtotime($m['created_at'])) ?></span>
+                            </div>
+                            <div class="msg-subject text-truncate"><?= html_escape($excerpt) ?></div>
+                            <span class="badge badge-status-<?= $m['status'] ?> mt-1"><?= $m['status'] ?></span>
+                        </div>
+                    </div>
+                    <?php } ?>
+                <?php } else { ?>
+                    <div class="empty-state">
+                        <i class='bx bx-envelope-open'></i>
+                        <span>No messages yet</span>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== Quick Actions + Music Activity ==================== -->
+<div class="row g-3 mt-1 mb-4">
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header">
+                <h6 class="section-title">Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-6 col-sm-3">
+                        <a href="javascript:;" class="quick-action-btn disabled" title="Module Projects à venir">
+                            <i class='bx bx-plus-circle'></i>Add Project
+                        </a>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <a href="javascript:;" class="quick-action-btn disabled" title="Module Profile à venir">
+                            <i class='bx bx-user-edit'></i>Edit Profile
+                        </a>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <a href="<?= base_url() ?>" target="_blank" class="quick-action-btn">
+                            <i class='bx bx-globe'></i>View Website
+                        </a>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <a href="javascript:;" class="quick-action-btn disabled" title="Module Messages à venir">
+                            <i class='bx bx-message-square-dots'></i>View Messages
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card h-100 music-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="music-icon-bubble"><i class='bx bxs-vinyl'></i></div>
+                    <div>
+                        <h6 class="section-title mb-0">Music Activity</h6>
+                        <small class="text-muted">Your sound, your identity.</small>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-4">
+                        <div class="music-stat">
+                            <div class="value"><?= (int) $music_projects ?></div>
+                            <div class="label">Music Projects</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="music-stat">
+                            <div class="value"><?= (int) $music_tracks ?></div>
+                            <div class="label">Tracks</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="music-stat">
+                            <div class="value"><?= (int) $music_videos ?></div>
+                            <div class="label">Videos</div>
+                        </div>
+                    </div>
+                </div>
+                <?php if ($music_projects == 0) { ?>
+                <div class="text-center text-muted small mt-3 mb-0">
+                    <i class='bx bx-info-circle me-1'></i>No music projects yet — add one with the type "MUSIC".
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+<!--end page wrapper -->
+
+<?php
+// Graphique Projects Overview — Chart.js local (assets/admin/plugins/chartjs)
+if ($total_projects > 0) { ?>
+<script src="<?= base_url() ?>assets/admin/plugins/chartjs/js/chart.js"></script>
 <script>
-// Graphique en anneau - Paiements
-var paymentCtx = document.getElementById('paymentPieChart').getContext('2d');
-var paymentChart = new Chart(paymentCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Payés', 'En attente', 'Échoués'],
-        datasets: [{
-            data: [<?= $paid_inscriptions ?>, <?= $pending_inscriptions ?>, <?= $failed_inscriptions ?? 0 ?>],
-            backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b'],
-            hoverBackgroundColor: ['#17a673', '#dda20a', '#be2617'],
-            borderWidth: 2,
-            borderColor: '#fff'
-        }]
-    },
-    options: {
-        maintainAspectRatio: false,
-        cutout: '70%',
-        plugins: {
-            legend: {
-                display: false
-            }
-        }
-    }
-});
+(function () {
+    var ctx = document.getElementById('projectsOverviewChart');
+    if (!ctx || typeof Chart === 'undefined') return;
 
-// Graphique à barres - Inscriptions par mois
-var barCtx = document.getElementById('inscriptionsBarChart').getContext('2d');
-var barChart = new Chart(barCtx, {
-    type: 'bar',
-    data: {
-        labels: [
-            <?php if (!empty($inscriptions_by_month)): ?>
-                <?php foreach($inscriptions_by_month as $month): ?>
-                    '<?= substr($month->month, 0, 3) ?>',
-                <?php endforeach; ?>
-            <?php endif; ?>
-        ],
-        datasets: [{
-            label: 'Inscriptions',
-            data: [
-                <?php if (!empty($inscriptions_by_month)): ?>
-                    <?php foreach($inscriptions_by_month as $month): ?>
-                        <?= $month->count ?>,
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            ],
-            backgroundColor: 'rgba(78, 115, 223, 0.8)',
-            borderColor: 'rgba(78, 115, 223, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1
+    new Chart(ctx.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: ['IT', 'MUSIC', 'OTHER'],
+            datasets: [{
+                data: [<?= (int) $it_projects ?>, <?= (int) $music_projects ?>, <?= (int) $other_projects ?>],
+                backgroundColor: ['#4f46e5', '#db2777', '#94a3b8'],
+                borderWidth: 3,
+                borderColor: '#ffffff',
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            maintainAspectRatio: true,
+            cutout: '72%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            var label = context.label || '';
+                            var value = context.parsed || 0;
+                            return ' ' + label + ': ' + value;
+                        }
+                    }
                 }
             }
         }
-    }
-});
-
-// Graphique radar - Modes de présence
-<?php if (!empty($attendance_mode_stats)): ?>
-var attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
-var attendanceChart = new Chart(attendanceCtx, {
-    type: 'radar',
-    data: {
-        labels: [
-            <?php foreach($attendance_mode_stats as $mode): ?>
-                '<?= $mode->nom_attendance ?>',
-            <?php endforeach; ?>
-        ],
-        datasets: [{
-            label: 'Inscriptions',
-            data: [
-                <?php foreach($attendance_mode_stats as $mode): ?>
-                    <?= $mode->count ?>,
-                <?php endforeach; ?>
-            ],
-            backgroundColor: 'rgba(54, 185, 204, 0.2)',
-            borderColor: 'rgba(54, 185, 204, 1)',
-            pointBackgroundColor: 'rgba(54, 185, 204, 1)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(54, 185, 204, 1)'
-        }]
-    },
-    options: {
-        maintainAspectRatio: false,
-        scales: {
-            r: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1
-                }
-            }
-        }
-    }
-});
-<?php endif; ?>
-
-// Fonctions utilitaires
-function refreshChart(chartType) {
-    fetch('<?= base_url("dashboard/get_chart_data") ?>')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Actualiser les graphiques avec les nouvelles données
-                // (À implémenter selon vos besoins)
-                location.reload();
-            }
-        });
-}
-
-function changePeriod(period) {
-    // Changer la période des graphiques
-    // (À implémenter selon vos besoins)
-    console.log('Changer période:', period);
-}
-
-// Actualiser automatiquement toutes les 5 minutes
-setTimeout(function() {
-    location.reload();
-}, 5 * 60 * 1000);
+    });
+})();
 </script>
-<?php include VIEWPATH.'includes/Footer.php'; ?>
-<script src="<?=base_url()?>assets/admin/js/bootstrap.bundle.min.js"></script>
-
-
+<?php } ?>
 
 <style>
-.avatar-sm {
-    width: 36px;
-    height: 36px;
-    line-height: 36px;
-    font-size: 14px;
-}
-
-.border-left-purple {
-    border-left: .25rem solid #6f42c1!important;
-}
-
-.border-left-indigo {
-    border-left: .25rem solid #6610f2!important;
-}
-
-.border-left-orange {
-    border-left: .25rem solid #fd7e14!important;
-}
-
-.border-left-teal {
-    border-left: .25rem solid #20c997!important;
-}
-
-.text-purple {
-    color: #6f42c1!important;
-}
-
-.text-indigo {
-    color: #6610f2!important;
-}
-
-.text-orange {
-    color: #fd7e14!important;
-}
-
-.text-teal {
-    color: #20c997!important;
-}
-
-.progress-wrapper {
-    margin-bottom: 1rem;
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-}
-
-.progress-label {
-    font-size: 0.875rem;
-}
-
-.progress-percentage {
-    font-size: 0.75rem;
-    color: #6c757d;
-}
-
-.card {
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.card-header {
-    border-bottom: 1px solid #e3e6f0;
-}
-
-.table th {
-    border-top: none;
-    font-weight: 600;
-    color: #5a5c69;
-}
-
-.table td {
-    vertical-align: middle;
-}
-
-.badge-pill {
-    padding-right: 0.6em;
-    padding-left: 0.6em;
-}
-
-
-
-
-
-/* dashboard.css */
-:root {
-    --primary-color: #4e73df;
-    --success-color: #1cc88a;
-    --info-color: #36b9cc;
-    --warning-color: #f6c23e;
-    --danger-color: #e74a3b;
-    --secondary-color: #858796;
-    --light-color: #f8f9fc;
-    --dark-color: #5a5c69;
-}
-
-.card-stat {
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-    transition: all 0.3s ease;
-}
-
-.card-stat:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
-}
-
-.stat-icon {
-    font-size: 2.5rem;
-    opacity: 0.3;
-}
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-}
-
-.stat-label {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stat-change {
-    font-size: 0.75rem;
-}
-
-.chart-container {
-    position: relative;
-    height: 300px;
-}
-
-.mini-chart {
-    height: 100px;
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: white;
-}
-
-.bg-gradient-primary {
-    background: linear-gradient(87deg, #4e73df 0, #224abe 100%) !important;
-}
-
-.bg-gradient-success {
-    background: linear-gradient(87deg, #1cc88a 0, #13855c 100%) !important;
-}
-
-.bg-gradient-info {
-    background: linear-gradient(87deg, #36b9cc 0, #258391 100%) !important;
-}
-
-.bg-gradient-warning {
-    background: linear-gradient(87deg, #f6c23e 0, #dda20a 100%) !important;
-}
-
-.progress-sm {
-    height: 0.5rem;
-}
-
-.table-hover tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.02);
-}
-
-.loading-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.refresh-btn:hover .loading-spinner {
-    animation: spin 0.5s linear infinite;
-}
+.min-width-0 { min-width: 0; }
+.small-text { font-size: .68rem; }
 </style>
+
+<?php include VIEWPATH.'includes/Footer.php'; ?>

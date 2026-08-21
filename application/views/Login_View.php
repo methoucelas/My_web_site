@@ -21,7 +21,7 @@
 <link href="<?=base_url()?>assets/admin/sass/app.css" rel="stylesheet">
 <link rel="stylesheet" href="<?=base_url()?>assets/admin/sass/dark-theme.css">
 <link href="<?=base_url()?>assets/admin/css/icons.css" rel="stylesheet">
-<title>AbeLab</title>
+<title>NTURO</title>
 </head>
 
 <body class="">
@@ -49,7 +49,7 @@
 						<img src="<?=base_url()?>assets/admin/images/logo-icon.png" width="60" alt="">
 					</div>
 					<div class="text-center mb-4">
-						<h5 class="">AbeLab</h5>
+						<h5 class="">NTURO</h5>
 						<p class="mb-0">Please log in to your account</p>
 					</div>
 					<?php if (!empty($this->session->flashdata('sms'))) {
@@ -59,7 +59,7 @@
 						<form class="row g-3" action="<?=base_url('Admin/do_login')?>" method="POST">
 							<div class="col-12">
 								<label for="inputEmailAddress" class="form-label">Email</label>
-								<input type="text" class="form-control" id="inputEmailAddress" name="Username" placeholder="jhon@example.com">
+								<input type="text" class="form-control" id="inputEmailAddress" name="email" placeholder="nturo@example.com">
 							</div>
 							<div class="col-12">
 								<label for="inputChoosePassword" class="form-label">Password</label>

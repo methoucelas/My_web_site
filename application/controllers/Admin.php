@@ -19,26 +19,25 @@ class Admin extends MY_Controller {
 
 	public function do_login($value='')
 	{
-		$username=$this->input->post('Username');
+		$email=$this->input->post('email');
     	$password=$this->input->post('password');
 
-    	$checkUsername=$this->Model->check_email($username);
+    	$checkemail=$this->Model->check_email($email);
     
-    if ($checkUsername==TRUE) {
+    if ($checkemail==TRUE) {
 
-        $login=$this->Model->login($username,$password);
+        $login=$this->Model->login($email,$password);
 
-      if ($login['isActive']!=0) {
+      if ($login!=FALSE && $login['status']=='active') {
         
-        $result=$this->Model->readOne('users',['idUser'=>$login['idUser']]); 
+        $result=$this->Model->readOne('users',['id'=>$login['id']]); 
 
         $session = array(
-                    'idUser' => $result['idUser'],
-                    'username' => $result['username'],
-                    'firstName' => $result['firstName'],
-                    'lastName' => $result['lastName'],
-                    'user' => $result['firstName'].' '.$result['lastName'],
-                    'idGroup'=>$result['idGroup'],
+                    'id' => $result['id'],
+                    'email' => $result['email'],
+                    'name' => $result['name'],
+                    'role' => $result['role'],
+                    'user' => $result['name'],
                     'logged_in'=>TRUE
                 );
                     
@@ -48,34 +47,35 @@ class Admin extends MY_Controller {
 
       
       }else{
-              // $this->attempt_time($username);
+              // $this->attempt_time($email);
             $sms['sms']='<div id="message" class="alert alert-danger text-center">
-                                <strong>Oups!</strong> incorrect password/ you are account is not activated.
+                                <strong>Oups!</strong> mot de passe incorrect / votre compte est désactivé.
                             </div>';
             $this->session->set_flashdata($sms);
             redirect(base_url('Admin'));
       }
     }else{
           $sms['sms']='<div id="message" class="alert alert-danger text-center">
-                                <strong>Oups!</strong> incorrect username/ account has been desabled.
+                                <strong>Oups!</strong> email incorrect / compte inexistant.
                             </div>';
         $this->session->set_flashdata($sms);
         redirect(base_url('Admin'));
     }
-            
+            	
 	}
 
 	public function Logout(){
 
     $session = array(
-            'idUser' => NULL,
-            'username' => NULL,
-            'firstName' => NULL,
-            'lastName' => NULL,
+            'id' => NULL,
+            'email' => NULL,
+            'name' => NULL,
+            'role' => NULL,
             'logged_in'=> FALSE
         );
 
         $this->session->set_userdata($session);
+        $this->session->sess_destroy();
         
         redirect(base_url('Admin'));
 

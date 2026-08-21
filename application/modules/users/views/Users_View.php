@@ -20,6 +20,11 @@
 </div>
 </div>
 <!--end breadcrumb-->
+
+<?php if (!empty($this->session->flashdata('sms'))) {
+    echo $this->session->flashdata('sms');
+} ?>
+
 <hr/>
 <div class="card">
 <div class="card-body">
@@ -28,13 +33,11 @@
 	<thead>
 		<tr>
 			<th>#</th>
-            <th>Prénom </th>
             <th>Nom </th>
-            <th>Nom d'utilisateur </th>
             <th>Email </th>
-            <th>Phone </th>
-            <th>Groupe </th>
-            <th>Date </th>
+            <th>Rôle </th>
+            <th>Statut </th>
+            <th>Créé le </th>
             <th>Action</th>
 		</tr>
 	</thead>
@@ -42,69 +45,75 @@
 <?php $i=1; foreach ($users as $value) {  ?>
             <tr>
                 <td><?=$i++;?></td>
-                <td><?=$value['firstName']?></td>
-                <td><?=$value['lastName']?></td>
-                <td><?=$value['username']?></td>
+                <td><?=$value['name']?></td>
                 <td><?=$value['email']?></td>
-                <td><?=$value['telephone']?></td>
-                <td><?=$value['group_name']?></td>
-                <td><?=$value['dateinsertion']?></td>
+                <td><?=ucfirst($value['role'])?></td>
+                <td>
+                    <?php if ($value['status']=='active') { ?>
+                    <span class="badge bg-success">Actif</span>
+                    <?php } else { ?>
+                    <span class="badge bg-danger">Inactif</span>
+                    <?php } ?>
+                </td>
+                <td><?=date('d/m/Y H:i', strtotime($value['created_at']))?></td>
                 <td>
                    <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Options</button>
                    <div class="dropdown-menu">
-                    <a class="dropdown-item text-info" href="javascript:void()"  data-bs-toggle="modal" data-bs-target="#update_<?=$value['idUser']?>">Modifier</a>
-                    <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#delete_<?=$value['idUser']?>">Supprimer</a>
+                    <a class="dropdown-item text-info" href="javascript:void()"  data-bs-toggle="modal" data-bs-target="#update_<?=$value['id']?>">Modifier</a>
+                    <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#delete_<?=$value['id']?>">Supprimer</a>
 
-                    <a class="dropdown-item text-info" href="#" data-bs-toggle="modal" data-bs-target="#reset_<?=$value['idUser']?>">Initialiser le mot de passe</a>
+                    <a class="dropdown-item text-info" href="#" data-bs-toggle="modal" data-bs-target="#reset_<?=$value['id']?>">Initialiser le mot de passe</a>
+
+                    <form action="<?=base_url('Users/ChangeStatus')?>" method="POST" class="status-form-<?=$value['id']?>">
+                        <input type="hidden" name="id" value="<?=$value['id']?>">
+                        <input type="hidden" name="status" value="<?=($value['status']=='active') ? 'inactive' : 'active'?>">
+                    </form>
+                    <a class="dropdown-item <?=($value['status']=='active') ? 'text-warning' : 'text-success'?>" href="javascript:void(0)" onclick="document.querySelector('.status-form-<?=$value['id']?>').submit();">
+                        <?=($value['status']=='active') ? 'Désactiver' : 'Activer'?>
+                    </a>
                    </div> 
                 </td>
             </tr>
 
 
-<div class="modal fade" id="update_<?=$value['idUser']?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="update_<?=$value['id']?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-bs-backdrop="static">
 <div class="modal-dialog modal-lg">
 <div class="modal-content">
 <div class="modal-header">
-<h4 class="modal-title" id="myLargeModalLabel">Modifier</h4>
+<h4 class="modal-title" id="myLargeModalLabel">Modifier l'utilisateur</h4>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 </div>
-<form action="<?=base_url('UpdateUsers')?>" method="POST" enctype="multipart/form-data">
-<input type="hidden" name="idUser" value="<?=$value['idUser']?>">
+<form action="<?=base_url('Users/Update')?>" method="POST" enctype="multipart/form-data">
+<input type="hidden" name="id" value="<?=$value['id']?>">
 <div class="modal-body">
 <div class="row">
 
 <div class="mb-3 position-relative col-md-12">
-<label class="form-label">Prénom</label>
-<input type="text" class="form-control" name="FistName" placeholder="Fist Name" value="<?=$value['firstName']?>" required="">
-</div>
-<div class="mb-3 position-relative col-md-12">
 <label class="form-label">Nom</label>
-<input type="text" value="<?=$value['lastName']?>" class="form-control" name="LastName" placeholder="Last Name" required="">
-</div>
-<div class="mb-3 position-relative col-md-12">
-<label class="form-label">Nom d'utilisateur</label>
-<input type="text" value="<?=$value['username']?>" class="form-control" readonly name="Username" placeholder="Nom d'utilisateur" required="">
+<input type="text" value="<?=$value['name']?>" class="form-control" name="name" placeholder="Nom complet" required="">
 </div>
 <div class="mb-3 position-relative col-md-12">
 <label class="form-label">Email</label>
-<input type="email" value="<?=$value['email']?>" class="form-control" name="email" placeholder="Email" >
+<input type="email" value="<?=$value['email']?>" class="form-control email-check" data-id="<?=$value['id']?>" name="email" placeholder="Email" required="">
+<small class="emailMessage text-danger"></small>
 </div>
-
 <div class="mb-3 position-relative col-md-12">
-<label class="form-label">Phone</label>
-<input type="text" value="<?=$value['telephone']?>" class="form-control" name="Phone" placeholder="Phone" >
+<label class="form-label">Mot de passe <small class="text-muted">(laisser vide pour ne pas changer)</small></label>
+<input type="password" class="form-control" name="password" placeholder="Nouveau mot de passe" >
 </div>
-
 <div class="mb-3 position-relative col-md-12">
-<label class="form-label">Groupe</label>
-<select class="form-control" name="idGroup" required>
-   <option value="">--Select--</option>
-   <?php foreach ($groupes as $valuee) {
-     ?>
-   <option value="<?=$valuee['idGroup']?>" <?=  ($valuee['idGroup']==$value['idGroup']) ? 'selected' : '' ; ?>><?=$valuee['group_name']?></option>
-   <?php } ?>
+<label class="form-label">Rôle</label>
+<select class="form-control" name="role" required>
+   <option value="admin" <?=($value['role']=='admin') ? 'selected' : '' ?>>Admin</option>
+   <option value="editor" <?=($value['role']=='editor') ? 'selected' : '' ?>>Editor</option>
 </select>
-
+</div>
+<div class="mb-3 position-relative col-md-12">
+<label class="form-label">Statut</label>
+<select class="form-control" name="status" required>
+   <option value="active" <?=($value['status']=='active') ? 'selected' : '' ?>>Actif</option>
+   <option value="inactive" <?=($value['status']=='inactive') ? 'selected' : '' ?>>Inactif</option>
+</select>
 </div>
 
 </div>
@@ -121,15 +130,15 @@
 </div><!-- /.modal -->
 
 
-<div class="modal fade" id="delete_<?=$value['idUser']?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="delete_<?=$value['id']?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-bs-backdrop="static">
 <div class="modal-dialog modal-lg">
 <div class="modal-content">
 <div class="modal-header">
-<h4 class="modal-title" id="myLargeModalLabel">Voulez-vous vraiment supprimer ce contenu ?</h4>
+<h4 class="modal-title" id="myLargeModalLabel">Voulez-vous vraiment supprimer cet utilisateur ?</h4>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 </div>
-<form action="<?=base_url('DeleteUsers')?>" method="POST">
-<input type="hidden" name="idUser" value="<?=$value['idUser']?>">
+<form action="<?=base_url('Users/Delete')?>" method="POST">
+<input type="hidden" name="id" value="<?=$value['id']?>">
 <div class="modal-footer">
 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
 <button type="submit" class="btn btn-info">Supprimer</button>  
@@ -140,18 +149,18 @@
 </div><!-- /.modal -->
 
 
-<div class="modal fade" id="reset_<?=$value['idUser']?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="reset_<?=$value['id']?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-bs-backdrop="static">
 <div class="modal-dialog modal-lg">
 <div class="modal-content">
 <div class="modal-header">
-<h4 class="modal-title" id="myLargeModalLabel">Voulez-vous vraiment réunitialiser ce mot de passe ?</h4>
+<h4 class="modal-title" id="myLargeModalLabel">Voulez-vous vraiment réinitialiser ce mot de passe ?</h4>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 </div>
-<form action="<?=base_url('InitialPassword')?>" method="POST">
-<input type="hidden" name="idUser" value="<?=$value['idUser']?>">
+<form action="<?=base_url('Users/initialPWD')?>" method="POST">
+<input type="hidden" name="id" value="<?=$value['id']?>">
 <div class="modal-footer">
 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
-<button type="submit" class="btn btn-info">réunitialiser</button>  
+<button type="submit" class="btn btn-info">Réinitialiser</button>  
 </div>                   
 </form>
 </div><!-- /.modal-content -->
@@ -164,13 +173,11 @@
 	<tfoot>
       <tr>
          <th>#</th>
-            <th>Prénom </th>
             <th>Nom </th>
-            <th>Nom d'utilisateur </th>
             <th>Email </th>
-            <th>Phone </th>
-            <th>Groupe </th>
-            <th>Date </th>
+            <th>Rôle </th>
+            <th>Statut </th>
+            <th>Créé le </th>
             <th>Action</th>
       </tr>
 	</tfoot>
@@ -188,44 +195,38 @@
 <div class="modal-dialog modal-lg">
 <div class="modal-content">
 <div class="modal-header">
-<h4 class="modal-title" id="myLargeModalLabel">Nouveau</h4>
+<h4 class="modal-title" id="myLargeModalLabel">Nouvel utilisateur</h4>
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 </div>
-<form action="<?=base_url('CreateUsers')?>" method="POST" enctype="multipart/form-data">
+<form action="<?=base_url('Users/Create')?>" method="POST" enctype="multipart/form-data">
 <div class="modal-body">
 <div class="row">
 <div class="mb-3 position-relative col-md-12">
-<label class="form-label">Prénom</label>
-<input type="text" class="form-control" name="FistName" placeholder="Prénom" required="">
-</div>
-<div class="mb-3 position-relative col-md-12">
 <label class="form-label">Nom</label>
-<input type="text" class="form-control" name="LastName" placeholder="Nom" required="">
-</div>
-<div class="mb-3 position-relative col-md-12">
-<label class="form-label">Nom d'utilisateur</label>
-<input type="text" onkeyup="checkUser(this.value)" class="form-control" name="Username" placeholder="Nom d'utilisateur" required="">
-<small id="usernameMessage" class="text-danger"></small>
+<input type="text" class="form-control" name="name" placeholder="Nom complet" required="">
 </div>
 <div class="mb-3 position-relative col-md-12">
 <label class="form-label">Email</label>
-<input type="email" class="form-control" name="email" placeholder="email" required="">
+<input type="email" onkeyup="checkEmail(this.value)" class="form-control" name="email" placeholder="Email" required="">
+<small id="emailMessage" class="text-danger"></small>
 </div>
 <div class="mb-3 position-relative col-md-12">
-<label class="form-label">Phone</label>
-<input type="text" class="form-control" name="Phone" placeholder="Phone" required="">
+<label class="form-label">Mot de passe <small class="text-muted">(vide = Admin@2025)</small></label>
+<input type="password" class="form-control" name="password" placeholder="Mot de passe" >
 </div>
-
 <div class="mb-3 position-relative col-md-12">
-<label class="form-label">Groupe</label>
-<select class="form-control" name="idGroup" required>
-   <option value="">--Sélectionner--</option>
-   <?php foreach ($groupes as $valuee) {
-     ?>
-   <option value="<?=$valuee['idGroup']?>"><?=$valuee['group_name']?></option>
-   <?php } ?>
+<label class="form-label">Rôle</label>
+<select class="form-control" name="role" required>
+   <option value="admin">Admin</option>
+   <option value="editor">Editor</option>
 </select>
-
+</div>
+<div class="mb-3 position-relative col-md-12">
+<label class="form-label">Statut</label>
+<select class="form-control" name="status" required>
+   <option value="active">Actif</option>
+   <option value="inactive">Inactif</option>
+</select>
 </div>
 
 </div>
@@ -245,26 +246,44 @@
 <?php include VIEWPATH.'includes/Footer.php' ;?>
 
 <script type="text/javascript">
-  function checkUser(username) {
+  function checkEmail(email) {
     $.ajax({
-      url: "<?=base_url('users/Users/checkUser');?>",
+      url: "<?=base_url('users/Users/checkEmail');?>",
       type: "POST",
-      data: { username: username },
+      data: { email: email },
       success: function(data) {
-        const usernameMessage = $('#usernameMessage');
+        const emailMessage = $('#emailMessage');
         const submitButton = $('#submitButton');
         
         if (data === 'denied') {
-          usernameMessage.text('Username is already taken!');
-          submitButton.prop('disabled', true); // Disable the submit button
+          emailMessage.text('Cet email est déjà utilisé !');
+          submitButton.prop('disabled', true);
         } else {
-          usernameMessage.text('');
-          submitButton.prop('disabled', false); // Enable the submit button
+          emailMessage.text('');
+          submitButton.prop('disabled', false);
         }
       },
       error: function() {
-        console.error('An error occurred while checking the username.');
+        console.error('Une erreur est survenue lors de la vérification de l\'email.');
       }
     });
   }
+
+  $(document).on('keyup', '.email-check', function() {
+    const input = $(this);
+    const message = input.closest('div').find('.emailMessage');
+    if (!input.val()) { message.text(''); return; }
+    $.ajax({
+      url: "<?=base_url('users/Users/checkEmail');?>",
+      type: "POST",
+      data: { email: input.val(), id: input.data('id') },
+      success: function(data) {
+        if (data === 'denied') {
+          message.text('Cet email est déjà utilisé !');
+        } else {
+          message.text('');
+        }
+      }
+    });
+  });
 </script>

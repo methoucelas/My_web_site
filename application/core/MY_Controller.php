@@ -27,11 +27,16 @@ class MY_Controller extends MX_Controller
 			$session_data = array('logged_in' => FALSE);
 			$this->session->set_userdata($session_data);
 		}else {
-			$idUser = $this->session->userdata('idUser');
-			$group_data = $this->Model->getUserGroupByUserId($idUser);
+			$id = $this->session->userdata('id');
+			$user = $this->Model->readOne('users', array('id' => $id));
 
-			$this->permission = unserialize($group_data['permission']);
-			$this->group_name = $group_data['group_name'];
+			if (empty($user) || $user['status'] != 'active') {
+				$this->session->sess_destroy();
+				redirect(base_url('Admin'));
+				return;
+			}
+
+			$this->group_name = $user['role'];
 		}
 	}
 	
