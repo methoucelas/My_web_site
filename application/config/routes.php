@@ -59,4 +59,6 @@ $route['Dashboard'] = 'Dashboard/Dashboard';
 $route['Admin'] = 'Admin/index';
 $route['Login'] = 'Admin/Login';
 $route['Logout'] = 'Admin/Logout';
+$route['ProjectTechnologies'] = 'project_technologies/project_technologies';
+$route['ProjectTechnologies/(:any)'] = 'project_technologies/project_technologies/$1';
 

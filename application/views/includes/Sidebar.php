@@ -26,42 +26,37 @@
 <li class="menu-label">Portfolio</li>
 
 <li>
-	<a href="javascript:;" class="menu-soon" title="Module à venir">
+	<a href="<?=base_url('Profile')?>" class="<?=($this->uri->segment(1)=='Profile')?'mm-active':''?>">
 		<div class="parent-icon"><i class='bx bx-user'></i></div>
 		<div class="menu-title">Profile</div>
-		<span class="soon-badge">Soon</span>
 	</a>
 </li>
 
 <li>
-	<a href="javascript:;" class="menu-soon" title="Module à venir">
+	<a href="<?=base_url('Projects')?>" class="<?=($this->uri->segment(1)=='Projects')?'mm-active':''?>">
 		<div class="parent-icon"><i class='bx bx-code-block'></i></div>
 		<div class="menu-title">Projects</div>
-		<span class="soon-badge">Soon</span>
 	</a>
 </li>
 
 <li>
-	<a href="javascript:;" class="menu-soon" title="Module à venir">
+	<a href="<?=base_url('Skills')?>" class="<?=($this->uri->segment(1)=='Skills')?'mm-active':''?>">
 		<div class="parent-icon"><i class='bx bx-brain'></i></div>
 		<div class="menu-title">Skills</div>
-		<span class="soon-badge">Soon</span>
 	</a>
 </li>
 
 <li>
-	<a href="javascript:;" class="menu-soon" title="Module à venir">
+	<a href="<?=base_url('Experiences')?>" class="<?=($this->uri->segment(1)=='Experiences')?'mm-active':''?>">
 		<div class="parent-icon"><i class='bx bx-briefcase-alt-2'></i></div>
 		<div class="menu-title">Experience</div>
-		<span class="soon-badge">Soon</span>
 	</a>
 </li>
 
 <li>
-	<a href="javascript:;" class="menu-soon" title="Module à venir">
+	<a href="<?=base_url('Education')?>" class="<?=($this->uri->segment(1)=='Education')?'mm-active':''?>">
 		<div class="parent-icon"><i class='bx bx-graduation'></i></div>
 		<div class="menu-title">Education</div>
-		<span class="soon-badge">Soon</span>
 	</a>
 </li>
 
@@ -90,18 +85,23 @@
 <li class="menu-label">Content</li>
 
 <li>
-	<a href="javascript:;" class="menu-soon" title="Module à venir">
+	<a href="<?=base_url('Categories')?>" class="<?=($this->uri->segment(1)=='Categories')?'mm-active':''?>">
 		<div class="parent-icon"><i class='bx bx-category'></i></div>
 		<div class="menu-title">Categories</div>
-		<span class="soon-badge">Soon</span>
 	</a>
 </li>
 
 <li>
-	<a href="javascript:;" class="menu-soon" title="Module à venir">
+	<a href="<?=base_url('Technologies')?>" class="<?=($this->uri->segment(1)=='Technologies')?'mm-active':''?>">
 		<div class="parent-icon"><i class='bx bx-chip'></i></div>
 		<div class="menu-title">Technologies</div>
-		<span class="soon-badge">Soon</span>
+	</a>
+</li>
+
+<li>
+	<a href="<?=base_url('ProjectTechnologies')?>" class="<?=($this->uri->segment(1)=='ProjectTechnologies')?'mm-active':''?>">
+		<div class="parent-icon"><i class='bx bx-link-alt'></i></div>
+		<div class="menu-title">Projets & Tech</div>
 	</a>
 </li>
 
